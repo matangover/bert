@@ -8,6 +8,9 @@ import React, {
   View
 } from 'react-native';
 
+import geolib from 'geolib';
+import _ from 'lodash';
+
 import stopsData from './assets/stops.json'
 
 class StopsScreen extends Component {
@@ -25,15 +28,20 @@ class StopsScreen extends Component {
         <TouchableHighlight
           key={stop.stop_code}
           onPress={() => this.props.navigator.push({name: 'bus_times', stop_id: stop.stop_code})}>
-            <Text>Stop {stop.stop_code}</Text>
+            <Text>{stop.stop_name} ({stop.stop_code})</Text>
         </TouchableHighlight>
       ));
     }
 
+    var location = this.state.position &&
+      <Text>
+        Location: ({this.state.position.coords.latitude}, {this.state.position.coords.longitude})
+      </Text>;
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <Text>Stops:</Text>
         {children}
+        {location}
       </View>
     );
   }
@@ -49,7 +57,14 @@ class StopsScreen extends Component {
   }
 
   getStops() {
-    return stopsData.splice(0, 10);
+    var stopWithDistance = stopsData.map(stop => ({stop, distance: this.getStopDistance(stop)}));
+    return _.sortBy(stopWithDistance, stop => stop.distance).splice(0, 10).map(stop => stop.stop);
+  }
+
+  getStopDistance(stop) {
+    return geolib.getDistance(
+      this.state.position.coords,
+      {latitude: stop.stop_lat, longitude: stop.stop_lon});
   }
 }
 

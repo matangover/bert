@@ -6,6 +6,8 @@
     "start": "react-native start"
   },
   "dependencies": {
+    "geolib": "^2.0.18",
+    "lodash": "^4.0.1",
     "react-native": "^0.18.1"
   }
 }
