@@ -13,18 +13,22 @@ import _ from 'lodash';
 
 import stopsData from './assets/stops.json'
 
+//var STOPS_URL = 'http://ernie-server.herokuapp.com/stops';
+var STOPS_URL = 'http://localhost:5000/stops';
+
 class StopsScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {position: null};
+    this.state = {position: null, stops: null};
   }
 
   render() {
     if (!this.state.position) {
-      var children = <Text>Loading...</Text>;
+      var children = <Text>Loading position...</Text>;
+    } else if (!this.state.stops) {
+      var children = <Text>Loading stops...</Text>;
     } else {
-      var stops = this.getStops();
-      var children = stops.map(stop => (
+      var children = this.state.stops.map(stop => (
         <TouchableHighlight
           key={stop.stop_code}
           onPress={() => this.props.navigator.push({name: 'bus_times', stop_id: stop.stop_id})}>
@@ -50,15 +54,18 @@ class StopsScreen extends Component {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         this.setState({position});
+        this.loadStops(position.coords)
       },
       (error) => alert(error.message),
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
     );
   }
 
-  getStops() {
-    var stopWithDistance = stopsData.map(stop => ({stop, distance: this.getStopDistance(stop)}));
-    return _.sortBy(stopWithDistance, stop => stop.distance).splice(0, 10).map(stop => stop.stop);
+  loadStops(coords) {
+    console.log(`${STOPS_URL}?lat=${coords.latitude}&long=${coords.longitude}`);
+    fetch(`${STOPS_URL}?lat=${coords.latitude}&long=${coords.longitude}`)
+      .then(response => response.json())
+      .then(responseJson => this.setState({stops: responseJson}));
   }
 
   getStopDistance(stop) {
