@@ -8,21 +8,28 @@ import React, {
   View
 } from 'react-native';
 
+import stopsData from './assets/stops.json'
+
 class StopsScreen extends Component {
   render() {
+    var stops = this.getStops();
+    var children = stops.map(stop => (
+        <TouchableHighlight
+            key={stop.stop_code}
+            onPress={() => this.props.navigator.push({name: 'bus_times', stop_id: stop.stop_code})}>
+                <Text>Stop {stop.stop_code}</Text>
+        </TouchableHighlight>
+    ));
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <Text>Stops:</Text>
-        <TouchableHighlight
-            onPress={() => this.props.navigator.push({name: 'bus_times', stop_id: 1337})}>
-                <Text>Stop 1337</Text>
-        </TouchableHighlight>
-        <TouchableHighlight
-            onPress={() => this.props.navigator.push({name: 'bus_times', stop_id: 1338})}>
-                <Text>Stop 1338</Text>
-        </TouchableHighlight>
+        {children}
       </View>
     );
+  }
+
+  getStops() {
+      return stopsData.splice(0, 10);
   }
 }
 
