@@ -2,6 +2,7 @@
 import React, {
   AppRegistry,
   Component,
+  MapView,
   StyleSheet,
   TouchableHighlight,
   Text,
@@ -24,30 +25,38 @@ class StopsScreen extends Component {
 
   render() {
     if (!this.state.position) {
-      var children = <Text>Loading position...</Text>;
+      return (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text>Loading position...</Text>
+        </View>
+      );
     } else if (!this.state.stops) {
-      var children = <Text>Loading stops...</Text>;
+      return (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text>Loading stops...</Text>
+        </View>
+      );
     } else {
-      var children = this.state.stops.map(stop => (
-        <TouchableHighlight
-          key={stop.stop_code}
-          onPress={() => this.props.navigator.push({name: 'bus_times', stop_id: stop.stop_id})}>
-            <Text>{stop.stop_name} ({stop.stop_code}) [{stop.stop_id}]</Text>
-        </TouchableHighlight>
-      ));
+      var annotations = this.state.stops.map(stop => ({
+          latitude: stop.stop_lat,
+          longitude: stop.stop_lon,
+          title: stop.stop_name,
+          rightCalloutView:
+            <TouchableHighlight
+              onPress={() => {
+                this.props.navigator.push({name: 'bus_times', stop_id: stop.stop_id})
+              }}>
+              <Text>Arrivals ></Text>
+            </TouchableHighlight>
+        }));
+      return (
+        <MapView
+          style={{flex: 1}}
+          region={this.state.position.coords}
+          showsUserLocation={true}
+          annotations={annotations} />
+      );
     }
-
-    var location = this.state.position &&
-      <Text>
-        Location: ({this.state.position.coords.latitude}, {this.state.position.coords.longitude})
-      </Text>;
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text>Stops:</Text>
-        {children}
-        {location}
-      </View>
-    );
   }
 
   componentDidMount() {
