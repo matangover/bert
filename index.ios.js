@@ -6,46 +6,42 @@
 import React, {
   AppRegistry,
   Component,
+  Navigator,
   StyleSheet,
   Text,
   View
 } from 'react-native';
 
+import StopsScreen from './StopsScreen';
+import BusTimesScreen from './BusTimesScreen';
+
 class bert extends Component {
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
-      </View>
+      <Navigator
+          style={styles.container}
+          initialRoute={{name: 'stops'}}
+          renderScene={this.renderScene} />
     );
   }
+
+  renderScene(route, navigator) {
+      if (route.name === 'stops') {
+          return (
+              <StopsScreen navigator={navigator} />
+          );
+      } else if (route.name === 'bus_times') {
+          return (
+              <BusTimesScreen navigator={navigator} stop_id={route.stop_id}/>
+          );
+      }
+  };
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
   },
 });
 
