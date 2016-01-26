@@ -27,8 +27,8 @@ class StopsScreen extends Component {
       var children = stops.map(stop => (
         <TouchableHighlight
           key={stop.stop_code}
-          onPress={() => this.props.navigator.push({name: 'bus_times', stop_id: stop.stop_code})}>
-            <Text>{stop.stop_name} ({stop.stop_code})</Text>
+          onPress={() => this.props.navigator.push({name: 'bus_times', stop_id: stop.stop_id})}>
+            <Text>{stop.stop_name} ({stop.stop_code}) [{stop.stop_id}]</Text>
         </TouchableHighlight>
       ));
     }

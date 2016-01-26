@@ -8,8 +8,8 @@ import React, {
 } from 'react-native';
 import moment from 'moment';
 
-import stopTimes from './assets/stop_times_trimmed2.json'
-import trips from './assets/trips_trimmed.json'
+import stopTimes from './assets/stop_times_trimmed3.json'
+import trips from './assets/trips_trimmed3.json'
 import calendar from './assets/calendar.json'
 import routes from './assets/routes.json'
 
@@ -35,8 +35,8 @@ class BusTimesScreen extends Component {
   }
 
   getArrivalTimes() {
-    //var currentTime = moment();
-    var currentTime = moment('2016-01-26 20:30:00');
+    var currentTime = moment();
+    //var currentTime = moment('2016-01-26 20:30:00');
     //var halfHourFromNow = currentTime.clone().add(30, 'minutes');
     var currentTimeString = currentTime.format('HH:mm:ss');
     //var halfHourFromNowString = halfHourFromNow.format('HH:mm:ss');
